@@ -12,7 +12,7 @@ const getBestsellers = async (): Promise<Product[]> => {
     await page.goto(AMAZON_BESTSELLERS_URL, { waitUntil: "domcontentloaded" });
 
     const products: Product[] = await page.evaluate(async () => {
-      const productElements = document.querySelectorAll(".p13n-sc-uncoverable-faceout");
+      const productElements = Array.from(document.querySelectorAll(".p13n-sc-uncoverable-faceout")).slice(0, 3);
       const extractedProducts: Product[] = [];
 
       productElements.forEach((productElement, rank) => {
