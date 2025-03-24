@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch app.ts",
+    "scraper": "tsx src/web-scraper/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
