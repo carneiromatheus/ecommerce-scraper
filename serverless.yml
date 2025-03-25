@@ -1,0 +1,44 @@
+service: serverless-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: "dev"
+  region: "sa-east-1"
+  environment:
+    DYNAMODB_TABLE: ${self:service}-DB-${sls:stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  getBooks:
+    handler: src/handlers/getBooks.handler
+    description: Get all books from db
+    events:
+      - httpApi:
+          path: /books
+          method: get
+
+resources:
+  Resources:
+    BooksDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
