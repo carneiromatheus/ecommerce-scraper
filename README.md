@@ -25,8 +25,15 @@ Certifique-se de ter os seguintes itens instalados:
 
 1. Clone este repositório:
 
+   #### Usando HTTPS
    ```bash
    git clone https://github.com/carneiromatheus/ecommerce-scraper.git
+   cd ecommerce-scrapper
+   ```
+
+   #### Usando SSH
+   ```bash
+   git clone git@github.com:carneiromatheus/ecommerce-scraper.git
    cd ecommerce-scrapper
    ```
 
@@ -111,12 +118,27 @@ Teste os endpoints da API utilizando ferramentas como Postman ou cURL.
 
 ## Estrutura do Projeto
 
-- **`app.ts`**: Arquivo principal para execução do scraper.
-- **`src/types/product.ts`**: Define a interface `Book` para os dados extraídos.
-- **`src/web-scraper/amazon.ts`**: Contém a lógica de scraping para a página de bestsellers da Amazon.
-- **`src/database/dynamoDB.ts`**: Funções para interação com o DynamoDB.
-- **`src/handlers`**: Contém os handlers para as funções Lambda.
-  - **`getBooks.ts`**: Retorna os produtos do DynamoDB.
-  - **`refreshProducts.ts`**: Atualiza os produtos no DynamoDB.
-- **`serverless.yml`**: Configuração da API Serverless e recursos AWS.
+A estrutura do projeto foi organizada para separar responsabilidades e facilitar a manutenção:
+
+```
+ecommerce-scrapper/
+├── README.md                # Documentação do projeto
+├── package.json             # Configuração do projeto e dependências
+├── tsconfig.json            # Configuração do TypeScript
+├── serverless.yml           # Configuração da API Serverless e recursos AWS
+├── .gitignore               # Arquivos e pastas ignorados pelo Git
+├── src/                     # Código-fonte do projeto
+│   ├── database/            # Interação com o banco de dados
+│   │   └── dynamoDB.ts      # Funções para salvar e recuperar dados do DynamoDB
+│   ├── handlers/            # Handlers das funções Lambda
+│   │   ├── getBooks.ts      # Retorna os produtos do DynamoDB
+│   │   ├── refreshProducts.ts # Atualiza os produtos no DynamoDB
+│   │   └── createBooks.ts   # Insere novos produtos no DynamoDB
+│   ├── types/               # Definições de tipos TypeScript
+│   │   └── product.ts       # Interface `Book` para os dados extraídos
+│   ├── web-scraper/         # Lógica de scraping
+│   │   ├── amazon.ts        # Scraper para a página de bestsellers da Amazon
+│   │   └── index.ts         # Entrada principal para o scraper
+|
+```
 
