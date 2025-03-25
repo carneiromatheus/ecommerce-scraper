@@ -6,7 +6,7 @@ provider:
   stage: "dev"
   region: "sa-east-1"
   environment:
-    DYNAMODB_TABLE: ${self:service}-DB-${sls:stage}
+    DYNAMODB_TABLE: Amazon-Books-Bestsellers-DB
   iam:
     role:
       statements:
@@ -18,22 +18,32 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:BatchGetItem
+            - dynamodb:DescribeTable
           Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
-  getBooks:
+  getProducts:
     handler: src/handlers/getBooks.handler
-    description: Get all books from db
     events:
-      - httpApi:
-          path: /books
+      - http:
+          path: products
           method: get
+
+  refreshProducts:
+    handler: src/handlers/refreshProducts.handler
+    events:
+      - http:
+          path: refresh
+          method: post
 
 resources:
   Resources:
     BooksDynamoDbTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -41,4 +51,3 @@ resources:
           - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
